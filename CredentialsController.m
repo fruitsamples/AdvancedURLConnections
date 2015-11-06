@@ -5,7 +5,7 @@
 
     Written by: DTS
 
-    Copyright:  Copyright (c) 2010 Apple Inc. All Rights Reserved.
+    Copyright:  Copyright (c) 2011 Apple Inc. All Rights Reserved.
 
     Disclaimer: IMPORTANT: This Apple software is supplied to you by Apple Inc.
                 ("Apple") in consideration of your agreement to the following
@@ -875,13 +875,11 @@ enum {
         assert(object == [Credentials sharedCredentials]);
         assert([keyPath isEqual:@"identities"]);
         [self _reloadIdentities];
-    }
-    if (context == &self->_certificates) {
+    } else if (context == &self->_certificates) {
         assert(object == [Credentials sharedCredentials]);
         assert([keyPath isEqual:@"certificates"]);
         [self _reloadCertificates];
-    }
-    if (NO) {
+    } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }

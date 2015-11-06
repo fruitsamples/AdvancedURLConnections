@@ -5,7 +5,7 @@
 
     Written by: DTS
 
-    Copyright:  Copyright (c) 2010 Apple Inc. All Rights Reserved.
+    Copyright:  Copyright (c) 2011 Apple Inc. All Rights Reserved.
 
     Disclaimer: IMPORTANT: This Apple software is supplied to you by Apple Inc.
                 ("Apple") in consideration of your agreement to the following
@@ -61,15 +61,18 @@
 @implementation PickListController
 
 @synthesize pickList = _pickList;
+
+@synthesize debug    = _debug;
 @synthesize delegate = _delegate;
 
 @synthesize topView   = _topView;
 @synthesize tableView = _tableView;
 
 - (id)initWithPickList:(NSArray *)pickList
+    // See comment in header.
 {
     assert(pickList != nil);
-    assert(pickList.count != 0);
+    assert([pickList count] != 0);
     self = [super init];
     if (self != nil) {
         self->_pickList = [pickList copy];
@@ -79,6 +82,7 @@
 }
 
 - (id)initWithContentsOfFile:(NSString *)pickListFilePath
+    // See comment in header.
 {
     NSArray *       pickListArray;
     
@@ -91,6 +95,7 @@
 }
 
 - (id)initWithPickListNamed:(NSString *)pickListName bundle:(NSBundle *)bundle
+    // See comment in header.
 {
     NSString *      pickListPath;
     
@@ -98,7 +103,8 @@
     // bundleName may be nil
     
     if (bundle == nil) {
-        bundle = [NSBundle mainBundle];
+        bundle = [NSBundle bundleForClass:[self class]];
+        assert(bundle != nil);
     }
     
     pickListPath = [bundle pathForResource:pickListName ofType:@"plist"];
@@ -109,15 +115,15 @@
 
 - (void)dealloc
 {
-    assert(self->_tableView == nil);
-    assert(self->_topView == nil);
     [self->_pickList release];
+    assert(self->_topView == nil);
+    assert(self->_tableView == nil);
     [super dealloc];
 }
 
 #pragma mark * Attach and detach
 
-- (CGRect)_tableViewFrame
+- (CGRect)tableViewFrame
     // Calculates the frame for the pick list based on the coordinates of the top 
     // view and the size of the containing view (that is, the top view's superview, 
     // which will also be the pick list's superview).
@@ -138,26 +144,46 @@
 }
 
 - (void)attachBelowView:(UIView *)topView
+    // See comment in header.
 {
     assert(topView != nil);
     
+    assert(self.topView == nil);        // don't try and attach twice!
     self.topView = topView;
     
     assert(self.tableView == nil);
-    self.tableView = [[[UITableView alloc] initWithFrame:[self _tableViewFrame] style:UITableViewStylePlain] autorelease];
+
+    // Create and configure the table view and add it to the view hierarchy.
+
+    self.tableView = [[[UITableView alloc] initWithFrame:[self tableViewFrame] style:UITableViewStylePlain] autorelease];
+
+    self.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    if (self.debug) {
+        self.tableView.backgroundColor = [UIColor yellowColor];
+    }
 
     self.tableView.dataSource = self;
     self.tableView.delegate   = self;
     
-    [self.topView.superview addSubview:self.tableView];
+    // We place the view /under/ the top view.  This is necessary so that the top view masks 
+    // any new table view cells as they are being inserted at the top of the table (in the case 
+    // where we do an animated grow of the table in response to a keyboard hide).  If you change 
+    // the YES to a NO, the new cells show on top of the top view, resulting in a very ugly effect.
+    
+    if (YES) {
+        [self.topView.superview insertSubview:self.tableView belowSubview:self.topView];
+    } else {
+        [self.topView.superview addSubview:self.tableView];
+    }
     
     [self.tableView flashScrollIndicators];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_keyboardDidShow:)  name:UIKeyboardDidShowNotification  object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow: ) name:UIKeyboardDidShowNotification  object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (void)detach
+    // See comment in header.
 {
     if (self.tableView != nil) {
         [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidShowNotification  object:nil];
@@ -174,34 +200,107 @@
 
 #pragma mark * Keyboard handling
 
-- (void)_keyboardDidShow:(NSNotification *)aNotification
+- (BOOL)beginAnimationFromKeyboardNotification:(NSNotification *)note
+    // Start an animated block based on the keyboard animation information 
+    // in the notification.  Returns NO if the animation information is 
+    // missing (such as after a rotate).
+{
+    BOOL                    animated;
+    NSDictionary *          userInfo;
+    NSNumber *              durationObj;
+    NSNumber *              curveObj;
+    NSTimeInterval          duration;
+    UIViewAnimationCurve    curve;
+
+    userInfo = [note userInfo];
+    assert(userInfo != nil);
+    
+    animated = NO;
+    
+    durationObj = (NSNumber *) [userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
+    curveObj    = (NSNumber *) [userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey   ];
+    
+    if ( (durationObj != nil) && (curveObj != nil) ) {
+        assert([durationObj isKindOfClass:[NSNumber class]]);
+        assert([curveObj isKindOfClass:[NSNumber class]]);
+
+        duration = (NSTimeInterval)       [durationObj doubleValue];
+        curve    = (UIViewAnimationCurve) [curveObj    unsignedIntegerValue];
+
+        [UIView beginAnimations:[note name] context:nil];
+        [UIView setAnimationCurve:curve];
+        [UIView setAnimationDuration:duration];
+        
+        animated = YES;
+    }
+
+    return animated;
+}
+
+- (void)keyboardDidShow:(NSNotification *)note
     // A notification callback, called when the keyboard is shown.  We recalculate 
     // the size of the pick list table view to fit between the bottom of the top 
     // view and the top of the keyboard.
 {
-	// the keyboard is showing so resize the table's height
-	CGRect keyboardRect = [[[aNotification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    NSTimeInterval animationDuration = [[[aNotification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
-    CGRect frame = self.tableView.frame;
+    NSDictionary *          userInfo;
+    CGRect                  keyboardFrameEnd;                           // screen coordinates
+    CGRect                  keyboardFrameEndInContainerViewCoordinates; // in the coordinate space of the view that contains 
+    CGRect                  newTableViewFrame;                          // the table view (and the top view for that matter)
+    BOOL                    animated;
+
+    userInfo = [note userInfo];
+    assert(userInfo != nil);
+
+    assert([[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] isKindOfClass:[NSValue  class]]);
+    keyboardFrameEnd = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+
+    keyboardFrameEndInContainerViewCoordinates = [self.tableView.superview convertRect:keyboardFrameEnd fromView:nil];
+
+    if (self.debug) {
+        NSLog(@"-keyboardDidShow:");
+        NSLog(@"   keyboard in screen coordinates %@", NSStringFromCGRect(keyboardFrameEnd));
+        NSLog(@"keyboard in container coordinates %@", NSStringFromCGRect(keyboardFrameEndInContainerViewCoordinates));
+        NSLog(@"                table view bounds %@", NSStringFromCGRect(self.tableView.bounds));
+    }
     
-	frame.size.height -= keyboardRect.size.height;
-	frame.size.height += _topView.bounds.size.height;
-	
-    [UIView beginAnimations:@"ResizeForKeyboard" context:nil];
-    [UIView setAnimationDuration:animationDuration];
-    self.tableView.frame = frame;
-    [UIView commitAnimations];
-	
+    if ( CGRectIntersectsRect(self.tableView.frame, keyboardFrameEndInContainerViewCoordinates) ) {
+        newTableViewFrame = self.tableView.frame;
+        newTableViewFrame.size.height = keyboardFrameEndInContainerViewCoordinates.origin.y - newTableViewFrame.origin.y;
 
-
+        if (self.debug) {
+            NSLog(@"           table view frame start %@", NSStringFromCGRect(self.tableView.frame));
+            NSLog(@"             table view frame end %@", NSStringFromCGRect(newTableViewFrame));
+        }
+        animated = [self beginAnimationFromKeyboardNotification:note];
+        self.tableView.frame = newTableViewFrame;
+        if (animated) {
+            [UIView commitAnimations];
+        }
+        [self.tableView flashScrollIndicators];
+    }
 }
 
-- (void)_keyboardWillHide:(NSNotification *)note
+- (void)keyboardWillHide:(NSNotification *)note
     // A notification callback, called when the keyboard is hidden.  We revert the 
     // pick list table view to its default size.
 {
     #pragma unused(note)
-    self.tableView.frame = [self _tableViewFrame];
+    CGRect  newTableViewFrame;
+    BOOL    animated;
+
+    newTableViewFrame = [self tableViewFrame];
+    
+    if (self.debug) {
+        NSLog(@"-keyboardWillHide:");
+        NSLog(@"           table view frame start %@", NSStringFromCGRect(self.tableView.frame));
+        NSLog(@"             table view frame end %@", NSStringFromCGRect(newTableViewFrame));
+    }
+    animated = [self beginAnimationFromKeyboardNotification:note];
+    self.tableView.frame = newTableViewFrame;
+    if (animated) {
+        [UIView commitAnimations];
+    }
+    [self.tableView flashScrollIndicators];
 }
 
 #pragma mark * Table view callbacks
@@ -213,7 +312,7 @@
     assert(tv == self.tableView);
     assert(section == 0);
 
-    return self.pickList.count;
+    return [self.pickList count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tv cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -225,7 +324,7 @@
     assert(tv == self.tableView);
     assert(indexPath != nil);
     assert(indexPath.section == 0);
-    assert(indexPath.row < self.pickList.count);
+    assert(indexPath.row < [self.pickList count]);
 
     cell = [self.tableView dequeueReusableCellWithIdentifier:@"cell"];
     if (cell == nil) {
@@ -247,14 +346,23 @@
     assert(tv == self.tableView);
     assert(indexPath != nil);
     assert(indexPath.section == 0);
-    assert(indexPath.row < self.pickList.count);
+    assert(indexPath.row < [self.pickList count]);
 
-    // It's likely that the client is going to release its reference to us in 
-    // response to to this callback, so we ensure that our reference persists 
-    // while everything shuts down.
+    if ([self.delegate respondsToSelector:@selector(pickList:didPick:)]) {
+        // It's likely that the client is going to release its reference to us in 
+        // response to to this callback, so we ensure that our reference to self 
+        // persists while everything shuts down.
+        //
+        // This also means we don't have to copy the item from the pickList array; we 
+        // retain that array until we're deallocated, and we aren't be deallocated until 
+        // the autorelease pool drains.
+
+        [[self retain] autorelease];
+
+        [self.delegate pickList:self didPick:[self.pickList objectAtIndex:indexPath.row]];
+    }
     
-    [[self retain] autorelease];
-    [self.delegate pickList:self didPick:[self.pickList objectAtIndex:indexPath.row]];
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end

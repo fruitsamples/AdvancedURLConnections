@@ -5,7 +5,7 @@
 
     Written by: DTS
 
-    Copyright:  Copyright (c) 2010 Apple Inc. All Rights Reserved.
+    Copyright:  Copyright (c) 2011 Apple Inc. All Rights Reserved.
 
     Disclaimer: IMPORTANT: This Apple software is supplied to you by Apple Inc.
                 ("Apple") in consideration of your agreement to the following
@@ -56,6 +56,7 @@
 @interface AuthenticationController () <UITextFieldDelegate>
 
 @property (nonatomic, retain, readwrite) NSURLCredential *               credential;        // readwrite for internal clients
+@property (nonatomic, assign, readwrite) BOOL                            showingAuthMethod;
 
 @end
 
@@ -72,10 +73,11 @@
     return self;
 }
 
-@synthesize challenge   = _challenge;
-@synthesize persistence = _persistence;
-@synthesize credential  = _credential;
-@synthesize delegate    = _delegate;
+@synthesize challenge         = _challenge;
+@synthesize persistence       = _persistence;
+@synthesize credential        = _credential;
+@synthesize delegate          = _delegate;
+@synthesize showingAuthMethod = _showingAuthMethod;
 
 #pragma mark * Text field delegate callbacks
 
@@ -142,6 +144,36 @@
     }
 }
 
+- (void)setupPasswordDispositionLabel
+{
+    NSURLProtectionSpace *  protectionSpace;
+    NSString *              authMethod;
+    
+    protectionSpace = [self.challenge protectionSpace];
+    assert(protectionSpace != nil);
+
+    authMethod = [protectionSpace authenticationMethod];
+    assert(authMethod != nil);
+    
+    if (self.showingAuthMethod) {
+        self.passwordDispositionLabel.text = authMethod;
+    } else {
+        if ( [protectionSpace receivesCredentialSecurely] ) {
+            self.passwordDispositionLabel.text = @"PASSWORD WILL BE SENT SECURELY.";
+        } else {
+            self.passwordDispositionLabel.text = @"PASSWORD WILL BE SENT IN THE CLEAR.";
+        }
+    }
+}
+
+- (void)passwordDispositionLongPress:(UIGestureRecognizer*)gestureRecognizer
+{
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        self.showingAuthMethod = ! self.showingAuthMethod;
+        [self setupPasswordDispositionLabel];
+    }
+}
+
 #pragma mark * View controller boilerplate
 
 @synthesize userField                = _userField;
@@ -157,6 +189,7 @@
     NSString *              proposedPassword;
     NSString *              realm;
     NSString *              host;
+    UILongPressGestureRecognizer *  longPressRecognizer;
     
     [super viewDidLoad];
     
@@ -168,17 +201,22 @@
     assert(self.passwordDispositionLabel != nil);
     
     self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
-    
-    // Tell the user how secure their password is.
 
     protectionSpace = [self.challenge protectionSpace];
     assert(protectionSpace != nil);
+        
+    // Tell the user how secure their password is.
+
+    [self setupPasswordDispositionLabel];
     
-    if ( [protectionSpace receivesCredentialSecurely] ) {
-        self.passwordDispositionLabel.text = @"PASSWORD WILL BE SENT SECURELY.";
-    } else {
-        self.passwordDispositionLabel.text = @"PASSWORD WILL BE SENT IN THE CLEAR.";
-    }
+    // A long press on the password disposition label will cause it to display 
+    // the actual authentication method.
+    
+    self.passwordDispositionLabel.userInteractionEnabled = YES;
+    longPressRecognizer = [[[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(passwordDispositionLongPress:)] autorelease];
+    assert(longPressRecognizer != nil);
+    longPressRecognizer.minimumPressDuration = 1.0;
+    [self.passwordDispositionLabel addGestureRecognizer:longPressRecognizer];
     
     // Tell the user who they're authenticating with.
     

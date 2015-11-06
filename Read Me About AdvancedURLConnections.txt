@@ -1,10 +1,10 @@
 Read Me About AdvancedURLConnections
 ====================================
-1.1
+1.2
 
 AdvancedURLConnections demonstrates various advanced networking techniques with NSURLConnection.  Specifically, it demonstrates how to respond to authentication challenges, how to modify the default server trust evaluation (for example, to support a server with a self-signed certificate), and how to provide client identities.
 
-AdvancedURLConnections requires features that were introduced in iOS 3.0.
+AdvancedURLConnections requires features that were introduced in iOS 3.0
 
 Packing List
 ------------
@@ -53,13 +53,13 @@ IMPORTANT: The above will work on both the simulator and a real device.  However
 
 Building the Sample
 -------------------
-The sample was built using Xcode 3.2.3 on Mac OS X 10.6.4 with iPhone SDK 4.0.  You should be able to just open the project and choose Build from the Build menu.  The resulting program should be compatible with all devices running iOS 3.2 and later.  The bulk of my testing was done with an iPod touch (second generation) running iOS 4.0.
+The sample was built using Xcode 3.2.5 on Mac OS X 10.6.5 with iOS SDK 4.0.  You should be able to just open the project and choose Build from the Build menu.  The resulting program should be compatible with all devices running iOS 3.2 and later.  The bulk of my testing was done with an iPad running iOS 3.2.1 and an iPhone 3GS running iOS 4.2.1.
 
 How It Works
 ------------
 To get started with this sample you should have a basic understanding of how the NSURLConnection API works.  If you're not already familiar with downloading data via NSURLConnection, you should look at the SimpleURLConnections sample code.
 
-<http://developer.apple.com/iphone/library/samplecode/SimpleURLConnections/index.html>
+<http://developer.apple.com/library/ios/#samplecode/SimpleURLConnections/>
 
 The differences between the AdvancedGetController and the equivalent code in SimpleURLConnections is quite small.  The critical change is that AdvancedGetController implements the authentication challenge delegate methods (-connection:canAuthenticateAgainstProtectionSpace: and -connection:didReceiveAuthenticationChallenge:) using the ChallengeHandler class and its various concrete subclasses.
 
@@ -73,7 +73,7 @@ It then holds on to the challenge handler while the challenge is running.  When 
 
 Each concrete subclass of ChallengeHandler is responsible for handling one specific type of challenge.  The current handlers include:
 
-o AuthenticationChallengeHandler -- This handles HTTP authentication challenges (authentication methods NSURLAuthenticationMethodDefault, NSURLAuthenticationMethodHTTPBasic and NSURLAuthenticationMethodHTTPDigest) from both origin servers and proxies.
+o AuthenticationChallengeHandler -- This handles HTTP authentication challenges (authentication methods NSURLAuthenticationMethodDefault, NSURLAuthenticationMethodHTTPBasic, NSURLAuthenticationMethodHTTPDigest and NSURLAuthenticationMethodNTLM) from both origin servers and proxies.
 
 o ClientIdentityChallengeHandler -- This handles HTTPS client identity challenges (authentication method NSURLAuthenticationMethodClientCertificate), which occur when the server requires that the client supply an identity.
 
@@ -229,6 +229,10 @@ You can't currently import credentials globally into the simulator.  On a real i
 
 WARNING: The trust store paths described above are for debugging purposes only.  You should not access these files from code that you plan to ship to users.
 
+Testing client identities against a server running Mac OS X has become more difficult in later releases of Mac OS X 10.6.x.  See the following DevForums thread for details.
+
+<https://devforums.apple.com/thread/65290?tstart=0>
+
 It seems that it's not currently possible to respond to both a NSURLAuthenticationMethodServerTrust challenge and a NSURLAuthenticationMethodClientCertificate challenge.  That is, if an HTTPS server has a non-trusted server identity and requires that you provide a client identity, things don't work as expected (you get the NSURLAuthenticationMethodServerTrust challenge but the connection fails before you get the NSURLAuthenticationMethodClientCertificate challenge).  We're still investigating this issue <rdar://problem/7492560>.  In the meantime, the workaround is to install the server's root certificate globally (but beware of the simulator problems described earlier).
 
 At the bottom of the TLS stack on both iOS and Mac OS X is a component known as Secure Transport.  Secure Transport maintains a per-process TLS session cache.  When you connect via TLS, the cache stores information about the TLS negotiation so that subsequent connections can connect more quickly.  The on-the-wire mechanism is described at the link below.
@@ -247,7 +251,7 @@ This presents some interesting gotchas, especially while you're debugging.  For 
 
 5. On the other hand, if you delay for 11 minutes between steps 3 and 4, things work as expected (well, fail as expected :-).  This is because Secure Transport's TLS session cache has a timeout of 10 minutes.
 
-In the real world this isn't a huge problem, but it can be very confusing during debugging.  There's no programmatic way to clear the Secure Transport TLS session cache but, as the cache is per-process, you can avoid this problem during debugging by simply quitting and relaunching your application.
+In the real world this isn't a huge problem, but it can be very confusing during debugging.  There's no programmatic way to clear the Secure Transport TLS session cache but, as the cache is per-process, you can avoid this problem during debugging by simply quitting and relaunching your application.  Remember that, starting with iOS 4, pressing the Home button does not necessarily quit your application.  Instead, you should use quit the application from the recent applications list.
 
 Simplifying Assumptions
 -----------------------
@@ -269,7 +273,10 @@ If you find any problems with this sample, please file a bug against it.
 
 <http://developer.apple.com/bugreporter/>
 
-1.1 Updated sample of iOS 4.0.
+1.2 (Jan 2011) is a small update to add NTLM authentication support and to fix various minor issues.
+
+1.1 (Jul 2010) updated the sample for iOS 4.0.
+
 1.0 (Feb 2010) was the first shipping version.
 
 Share and Enjoy.
@@ -277,4 +284,4 @@ Share and Enjoy.
 Apple Developer Technical Support
 Core OS/Hardware
 
-18 Feb 2009
+15 Jan 2011

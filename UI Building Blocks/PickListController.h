@@ -5,7 +5,7 @@
 
     Written by: DTS
 
-    Copyright:  Copyright (c) 2010 Apple Inc. All Rights Reserved.
+    Copyright:  Copyright (c) 2011 Apple Inc. All Rights Reserved.
 
     Disclaimer: IMPORTANT: This Apple software is supplied to you by Apple Inc.
                 ("Apple") in consideration of your agreement to the following
@@ -58,32 +58,41 @@
 @interface PickListController : NSObject
 {
     NSArray *                       _pickList;
+    BOOL                            _debug;
     id<PickListControllerDelegate>  _delegate;
     UIView *                        _topView;
     UITableView *                   _tableView;
 }
 
 @property (nonatomic, copy,   readonly)  NSArray *                      pickList;
+
+@property (nonatomic, assign, readwrite) BOOL                           debug;
 @property (nonatomic, assign, readwrite) id<PickListControllerDelegate> delegate;
 
 - (id)initWithPickList:(NSArray *)pickList;                                         // array of NSString
 - (id)initWithContentsOfFile:(NSString *)pickListFilePath;                          // path to plist file whose root object is an array of strings
 - (id)initWithPickListNamed:(NSString *)pickListName bundle:(NSBundle *)bundle;     // name of plist file in bundle
-    // bundle may be nil, in which case we find the file in the main bundle
+    // bundle may be nil, in which case we find the file in the bundle containing this class
 
 - (void)attachBelowView:(UIView *)topView;
-    // Activates the pick list view as a peer of topView, but geometrically below it.
+    // Activates the pick list view as a peer of topView, but geometrically below it. 
     //
     // The pick list retains topView.  You must call detach to break this connection.
+    //
+    // IMPORTANT: If you call this with the keyboard visible, the pick list won't 
+    // be laid out correctly.  It's expected that you call this with the keyboard 
+    // hidden, or in the process of being shown, typically in the -textFieldDidBeginEditing: 
+    // delegate callback of the text field whose value the user is picking.
     
 - (void)detach;
-    // Deactivates the pick list view.
+    // Deactivates the pick list view.  It's safe to call this even if the pick list 
+    // has not been attached.
 
 @end
 
-@protocol PickListControllerDelegate
+@protocol PickListControllerDelegate <NSObject>
 
-@required
+@optional
 
 - (void)pickList:(PickListController *)controller didPick:(NSString *)picked;
     // Called when the user pick something from the list.  The pick list is not 

@@ -5,7 +5,7 @@
 
     Written by: DTS
 
-    Copyright:  Copyright (c) 2010 Apple Inc. All Rights Reserved.
+    Copyright:  Copyright (c) 2011 Apple Inc. All Rights Reserved.
 
     Disclaimer: IMPORTANT: This Apple software is supplied to you by Apple Inc.
                 ("Apple") in consideration of your agreement to the following
@@ -134,19 +134,6 @@
 }
 
 #pragma mark * Action code
-
-// SecPKCS12Import is documented to return errSecAuthFailed if the password is 
-// wrong, but that constant isn't in the iPhone SDK <rdar://problem/7433174>.  I've 
-// copied the definition from the Mac OS X SDK.
-
-#if !defined(WORK_AROUND_7433174)
-    #define WORK_AROUND_7433174 1
-#endif
-#if WORK_AROUND_7433174
-enum {
-    errSecAuthFailed = -25293 /* The user name or passphrase you entered is not correct. */
-};
-#endif
 
 - (CredentialImportStatus)_importPKCS12
     // Attempts to import the identities in a PKCS#12 data blob.
