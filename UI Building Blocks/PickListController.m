@@ -174,42 +174,26 @@
 
 #pragma mark * Keyboard handling
 
-- (void)_keyboardDidShow:(NSNotification *)note
+- (void)_keyboardDidShow:(NSNotification *)aNotification
     // A notification callback, called when the keyboard is shown.  We recalculate 
     // the size of the pick list table view to fit between the bottom of the top 
     // view and the top of the keyboard.
 {
-    NSDictionary *  userInfo;
-    CGRect          frame;
-    CGRect          keyboardFrame;
-    CGPoint         keyboardCenter;
-    CGPoint         keyboardTopInScreenCoordinates;
-    CGPoint         keyboardTopInWindowCoordinates;
-    CGPoint         keyboardTop;
+	// the keyboard is showing so resize the table's height
+	CGRect keyboardRect = [[[aNotification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    NSTimeInterval animationDuration = [[[aNotification userInfo] objectForKey:UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    CGRect frame = self.tableView.frame;
     
-    userInfo = [note userInfo];
-    assert(userInfo != nil);
-    
-    // Get the raw keyboard info from the notification.
-    
-    keyboardCenter = [[userInfo objectForKey:UIKeyboardCenterEndUserInfoKey] CGPointValue];
-    keyboardFrame  = [[userInfo objectForKey:UIKeyboardBoundsUserInfoKey   ] CGRectValue ];
-    
-    // Calculate the keyboard's top in screen coordinates and then map it through to 
-    // our view's coordinates.
-    
-    // Dude, they said there'd be no maths!
-    
-    keyboardTopInScreenCoordinates = keyboardCenter;
-    keyboardTopInScreenCoordinates.y -= (keyboardFrame.size.height / 2);
-    keyboardTopInWindowCoordinates = [self.topView.window convertPoint:keyboardTopInScreenCoordinates fromWindow:nil];
-    keyboardTop = [self.topView.window convertPoint:keyboardTopInWindowCoordinates toView:self.topView.superview];
-    
-    // Resize the table view to sit between the top view and the keyboard.
-    
-    frame = self.tableView.frame;
-    frame.size.height = keyboardTop.y - frame.origin.y;
+	frame.size.height -= keyboardRect.size.height;
+	frame.size.height += _topView.bounds.size.height;
+	
+    [UIView beginAnimations:@"ResizeForKeyboard" context:nil];
+    [UIView setAnimationDuration:animationDuration];
     self.tableView.frame = frame;
+    [UIView commitAnimations];
+	
+
+
 }
 
 - (void)_keyboardWillHide:(NSNotification *)note

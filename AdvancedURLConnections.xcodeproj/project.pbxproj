@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		02084AF111E5252A00199A4D /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02084AF011E5252A00199A4D /* MainWindow.xib */; };
+		02084DA911E53D8100199A4D /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 02084DA211E53D8100199A4D /* Icon-72.png */; };
+		02084DAA11E53D8100199A4D /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = 02084DA311E53D8100199A4D /* Icon-Small-50.png */; };
+		02084DAB11E53D8100199A4D /* Icon-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 02084DA411E53D8100199A4D /* Icon-Small.png */; };
+		02084DAC11E53D8100199A4D /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 02084DA511E53D8100199A4D /* Icon-Small@2x.png */; };
+		02084DAD11E53D8100199A4D /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 02084DA611E53D8100199A4D /* Icon.png */; };
+		02084DAE11E53D8100199A4D /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 02084DA711E53D8100199A4D /* Icon@2x.png */; };
+		02084DAF11E53D8100199A4D /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 02084DA811E53D8100199A4D /* iTunesArtwork */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		E4192D6A10DFE4A80089AAA5 /* AdvancedGetController.xib in Resources */ = {isa = PBXBuildFile; fileRef = E4192D6710DFE4A80089AAA5 /* AdvancedGetController.xib */; };
@@ -29,7 +37,6 @@
 		E4474D4910D950C000DE6974 /* credentials.png in Resources */ = {isa = PBXBuildFile; fileRef = E4474D4810D950C000DE6974 /* credentials.png */; };
 		E4AA03D710BEA0E600ED7B53 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E4AA03D510BEA0E600ED7B53 /* AppDelegate.m */; };
 		E4AA03D810BEA0E600ED7B53 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E4AA03D610BEA0E600ED7B53 /* main.m */; };
-		E4AA03DD10BEA0FE00ED7B53 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E4AA03DB10BEA0FE00ED7B53 /* MainWindow.xib */; };
 		E4AA03E210BEA1D300ED7B53 /* Credentials.m in Sources */ = {isa = PBXBuildFile; fileRef = E4AA03DF10BEA1D300ED7B53 /* Credentials.m */; };
 		E4AA03E310BEA1D300ED7B53 /* DebugController.m in Sources */ = {isa = PBXBuildFile; fileRef = E4AA03E110BEA1D300ED7B53 /* DebugController.m */; };
 		E4AA03FC10BEA25D00ED7B53 /* debug.png in Resources */ = {isa = PBXBuildFile; fileRef = E4AA03FB10BEA25D00ED7B53 /* debug.png */; };
@@ -41,6 +48,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		02084DA211E53D8100199A4D /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72.png"; sourceTree = "<group>"; };
+		02084DA311E53D8100199A4D /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small-50.png"; sourceTree = "<group>"; };
+		02084DA411E53D8100199A4D /* Icon-Small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small.png"; sourceTree = "<group>"; };
+		02084DA511E53D8100199A4D /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
+		02084DA611E53D8100199A4D /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		02084DA711E53D8100199A4D /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		02084DA811E53D8100199A4D /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D6058910D05DD3D006BFB54 /* AdvURLs.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AdvURLs.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -77,7 +91,7 @@
 		E4AA03D510BEA0E600ED7B53 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		E4AA03D610BEA0E600ED7B53 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E4AA03DA10BEA0FE00ED7B53 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E4AA03DB10BEA0FE00ED7B53 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
+		E4AA03DB10BEA0FE00ED7B53 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainWindow.xib; sourceTree = "<group>"; };
 		E4AA03DE10BEA1D300ED7B53 /* Credentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Credentials.h; sourceTree = "<group>"; };
 		E4AA03DF10BEA1D300ED7B53 /* Credentials.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Credentials.m; sourceTree = "<group>"; };
 		E4AA03E010BEA1D300ED7B53 /* DebugController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DebugController.h; sourceTree = "<group>"; };
@@ -105,6 +119,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		02084DA111E53D8100199A4D /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				02084DA211E53D8100199A4D /* Icon-72.png */,
+				02084DA311E53D8100199A4D /* Icon-Small-50.png */,
+				02084DA411E53D8100199A4D /* Icon-Small.png */,
+				02084DA511E53D8100199A4D /* Icon-Small@2x.png */,
+				02084DA611E53D8100199A4D /* Icon.png */,
+				02084DA711E53D8100199A4D /* Icon@2x.png */,
+				02084DA811E53D8100199A4D /* iTunesArtwork */,
+			);
+			path = Images;
+			sourceTree = SOURCE_ROOT;
+		};
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -196,9 +224,10 @@
 		E4AA03D910BEA0FE00ED7B53 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				02084DA111E53D8100199A4D /* Images */,
 				E4AA03DA10BEA0FE00ED7B53 /* Info.plist */,
 				E4AA04BF10BEACA400ED7B53 /* InitialDefaults.plist */,
-				E4AA03DB10BEA0FE00ED7B53 /* MainWindow.xib */,
+				02084AF011E5252A00199A4D /* MainWindow.xib */,
 				E4AA043F10BEA4BE00ED7B53 /* get.png */,
 				E4AA03FB10BEA25D00ED7B53 /* debug.png */,
 				E4474D4810D950C000DE6974 /* credentials.png */,
@@ -250,7 +279,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4AA03DD10BEA0FE00ED7B53 /* MainWindow.xib in Resources */,
+				02084AF111E5252A00199A4D /* MainWindow.xib in Resources */,
 				E4AA03FC10BEA25D00ED7B53 /* debug.png in Resources */,
 				E4AA044010BEA4BE00ED7B53 /* get.png in Resources */,
 				E4AA04C010BEACA400ED7B53 /* InitialDefaults.plist in Resources */,
@@ -263,6 +292,13 @@
 				E4192D6A10DFE4A80089AAA5 /* AdvancedGetController.xib in Resources */,
 				E4192D6B10DFE4A80089AAA5 /* CredentialsController.xib in Resources */,
 				E4192D6C10DFE4A80089AAA5 /* DebugController.xib in Resources */,
+				02084DA911E53D8100199A4D /* Icon-72.png in Resources */,
+				02084DAA11E53D8100199A4D /* Icon-Small-50.png in Resources */,
+				02084DAB11E53D8100199A4D /* Icon-Small.png in Resources */,
+				02084DAC11E53D8100199A4D /* Icon-Small@2x.png in Resources */,
+				02084DAD11E53D8100199A4D /* Icon.png in Resources */,
+				02084DAE11E53D8100199A4D /* Icon@2x.png in Resources */,
+				02084DAF11E53D8100199A4D /* iTunesArtwork in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,6 +328,17 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		02084AF011E5252A00199A4D /* MainWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E4AA03DB10BEA0FE00ED7B53 /* English */,
+			);
+			name = MainWindow.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		1D6058940D05DD3E006BFB54 /* Debug */ = {
@@ -332,9 +379,10 @@
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
-				SDKROOT = iphoneos3.0;
+				SDKROOT = iphoneos4.0;
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",
@@ -368,9 +416,10 @@
 				GCC_WARN_UNUSED_PARAMETER = YES;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.2;
 				ONLY_ACTIVE_ARCH = NO;
 				PREBINDING = NO;
-				SDKROOT = iphoneos3.0;
+				SDKROOT = iphoneos4.0;
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Wextra",

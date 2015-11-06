@@ -1,10 +1,10 @@
 Read Me About AdvancedURLConnections
 ====================================
-1.0
+1.1
 
 AdvancedURLConnections demonstrates various advanced networking techniques with NSURLConnection.  Specifically, it demonstrates how to respond to authentication challenges, how to modify the default server trust evaluation (for example, to support a server with a self-signed certificate), and how to provide client identities.
 
-AdvancedURLConnections requires features that were introduced in iPhone OS 3.0.
+AdvancedURLConnections requires features that were introduced in iOS 3.0.
 
 Packing List
 ------------
@@ -53,7 +53,7 @@ IMPORTANT: The above will work on both the simulator and a real device.  However
 
 Building the Sample
 -------------------
-The sample was built using Xcode 3.2.1 on Mac OS X 10.6.2 with iPhone SDK 3.1.2.  You should be able to just open the project and choose Build from the Build menu.  The resulting program should be compatible with all devices running iPhone OS 3.0 and later.  The bulk of my testing was done with an iPod touch (second generation) running iPhone OS 3.0.
+The sample was built using Xcode 3.2.3 on Mac OS X 10.6.4 with iPhone SDK 4.0.  You should be able to just open the project and choose Build from the Build menu.  The resulting program should be compatible with all devices running iOS 3.2 and later.  The bulk of my testing was done with an iPod touch (second generation) running iOS 4.0.
 
 How It Works
 ------------
@@ -225,13 +225,13 @@ Enter pass phrase for tmp.pem: ****
 Enter Export Password: ****
 Verifying - Enter Export Password: ****
 
-You can't currently import credentials globally into the simulator.  On a real iPhone OS device you can point Safari at a root certificate and, after appropriate user confirmation, it will be added to the list of trust root certificates for the entire system.  This is not currently possible on the simulator.  If you're feeling adventurous you can add a trusted root certificate by hacking on the simulator's trust store (~/Library/Application Support/iPhone Simulator/User/Library/Keychains/TrustStore.sqlite3), cribbing the format from the global trust store that's included in the SDK (for example, /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator3.1.2.sdk/System/Library/Frameworks/Security.framework/TrustStore.sqlite3).  This is not for the faint of heart!  A better solution, and the solution we recommend for application developers in general, is to import the trusted root certificate into your own application's keychain and then apply it to server trust evaluations as shown by this sample code (specifically, the behaviour associated with kDebugOptionsServerValidationTrustImportedCertificates).
+You can't currently import credentials globally into the simulator.  On a real iOS device you can point Safari at a root certificate and, after appropriate user confirmation, it will be added to the list of trust root certificates for the entire system.  This is not currently possible on the simulator.  If you're feeling adventurous you can add a trusted root certificate by hacking on the simulator's trust store (~/Library/Application Support/iPhone Simulator/User/Library/Keychains/TrustStore.sqlite3), cribbing the format from the global trust store that's included in the SDK (for example, /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator3.1.2.sdk/System/Library/Frameworks/Security.framework/TrustStore.sqlite3).  This is not for the faint of heart!  A better solution, and the solution we recommend for application developers in general, is to import the trusted root certificate into your own application's keychain and then apply it to server trust evaluations as shown by this sample code (specifically, the behaviour associated with kDebugOptionsServerValidationTrustImportedCertificates).
 
 WARNING: The trust store paths described above are for debugging purposes only.  You should not access these files from code that you plan to ship to users.
 
 It seems that it's not currently possible to respond to both a NSURLAuthenticationMethodServerTrust challenge and a NSURLAuthenticationMethodClientCertificate challenge.  That is, if an HTTPS server has a non-trusted server identity and requires that you provide a client identity, things don't work as expected (you get the NSURLAuthenticationMethodServerTrust challenge but the connection fails before you get the NSURLAuthenticationMethodClientCertificate challenge).  We're still investigating this issue <rdar://problem/7492560>.  In the meantime, the workaround is to install the server's root certificate globally (but beware of the simulator problems described earlier).
 
-At the bottom of the TLS stack on both iPhone OS and Mac OS X is a component known as Secure Transport.  Secure Transport maintains a per-process TLS session cache.  When you connect via TLS, the cache stores information about the TLS negotiation so that subsequent connections can connect more quickly.  The on-the-wire mechanism is described at the link below.
+At the bottom of the TLS stack on both iOS and Mac OS X is a component known as Secure Transport.  Secure Transport maintains a per-process TLS session cache.  When you connect via TLS, the cache stores information about the TLS negotiation so that subsequent connections can connect more quickly.  The on-the-wire mechanism is described at the link below.
 
 <http://en.wikipedia.org/wiki/Transport_Layer_Security#Resumed_TLS_handshake>
 
@@ -269,6 +269,7 @@ If you find any problems with this sample, please file a bug against it.
 
 <http://developer.apple.com/bugreporter/>
 
+1.1 Updated sample of iOS 4.0.
 1.0 (Feb 2010) was the first shipping version.
 
 Share and Enjoy.
